@@ -2,6 +2,34 @@
 
 按版本倒序列出可读变更。机器读取请用 [`updates.json`](./updates.json)；只读哪些文件变动请用 [`manifest.json`](./manifest.json) 的 `last_modified` 字段。
 
+## 1.0.3 — 2026-05-28
+
+**新增 / 修订 1 条编辑铁律：封面与致谢页按模板能力来，不要硬造。**
+
+背景：v1.0.2 起多数模板已删除自带的"稻壳儿宣传 / 缩略图墙"宣传页，意味着模板里**不一定**有封面（cover）/ 目录（agenda）/ 章节扉页（section_divider）/ 致谢页（ending）。下游 AI 看到 `page_roles` 中某个角色为空时，过去可能会从内容页里挑一张冒充，或者硬塞一段"感谢聆听"。这会破坏视觉一致性。
+
+新规则（SKILL.md > 编辑铁律 第 8 条 / workflow.md > A4）：
+
+- `page_roles.cover == []` → 直接从第一张内容页开始，**不要伪造封面**
+- `page_roles.ending == []` → 直接以最后一张内容页收尾，**不要硬造"感谢聆听"**
+- `page_roles.agenda == []` → 不强加目录
+- `page_roles.section_divider == []` → 不强加分章扉页
+
+简言之："**模板有什么角色就用什么角色**"。
+
+不涉及模板内容变更（pptx / detail.json / preview.png / intro.md 全部保持 1.0.2）。仅更新：
+
+- `SKILL.md`（编辑铁律第 8 条）
+- `references/workflow.md`（A4 选页指引）
+- `VERSION` / `CHANGELOG.md` / `updates.json` / `manifest.json`
+
+升级方式：
+
+```bash
+python3 scripts/check_update.py     # 看到 1.0.2 → 1.0.3
+python3 scripts/apply_update.py     # 仅下载 ~6 个文档/元数据文件，无 LFS 流量
+```
+
 ## 1.0.2 — 2026-05-28
 
 **继续清理模板宣传页 + 拆分超大模板。**

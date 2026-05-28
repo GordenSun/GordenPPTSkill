@@ -53,14 +53,13 @@ python3 scripts/check_update.py
 当用户提供了 .pptx 文件且明确希望以它作模板时：
 
 1. 把用户的 pptx 当作"未知模板"
-2. 用 `scripts/render_slides.py` 把每页渲染成 PNG
-3. 用 `python-pptx` 现场探查每页的 shape / paragraph / run 结构（无需额外脚本）
-4. 自己看每页（PNG + shape 输出）：
+2. 用 `scripts/render_slides.py` + `scripts/extract_template.py` 解析它，**得到 raw.json 和每页 PNG**
+3. 自己看每页（PNG + raw.json 文本）：
    - 推断每页是什么角色（封面 / 目录 / 章节扉页 / 内容页 / 结束 / 模板宣传）
    - 推断每页适合放什么内容
-   - 跳过模板宣传 / "稻壳儿" / 感谢下载 之类
-5. 按 [模式 B 工作流](./references/custom-template-workflow.md) 直接用 explicit `address` 写 `edits.json`
-6. **不要修改用户模板原文件**；所有改动写到新的 output.pptx
+   - 标记不要使用的页面（模板宣传 / "稻壳儿" 之类）
+4. 按 [模式 B 工作流](./references/custom-template-workflow.md) 进行后续选页 + 文字替换
+5. **不要修改用户模板原文件**；所有改动写到新的 output.pptx
 
 ### 模式 C：完全原创（不基于任何模板）
 
@@ -81,6 +80,11 @@ python3 scripts/check_update.py
 5. **图形 / 图表通常无法同步** —— 装饰性的进度条 / 圆环 / 旗帜路径 / 流程箭头是固定形状；改了百分比文字不会改弧长。每个模板 detail.json 里如有这类页面会在 `cautions` 字段列出。
 6. **真实数据图表才能改数据** —— 如果某页有 PPT 原生 chart（`shape.has_chart=True`），可以用 `build_pptx.py --chart-data` 同步更新；详见 [`references/chart-editing.md`](./references/chart-editing.md)。
 7. **章节名前后呼应** —— 改了目录章节名，对应的分章扉页 + 内容页面包屑文字都要同步改。
+8. **封面 / 致谢页按模板能力来，不要硬造** ——
+   - 读 `detail.json` 的 `page_roles`，如果 `cover` 数组为空，**直接从第一张内容页开始**，不要拿一张内容页当封面用，更不要从其他模板临时凑一张封面页。
+   - 如果 `ending` 数组为空，**直接以最后一张内容页收尾**，不要硬造"感谢聆听"。
+   - 同理，`agenda` 空 → 不强加目录；`section_divider` 空 → 不强加分章扉页。
+   - 也就是说：**模板有什么角色就用什么角色**，少一个角色就少一页，不要破坏视觉一致性去拼凑。这条规则在 v1.0.3 起对所有模板生效。
 
 ## 标准工作流（模式 A）
 
@@ -113,24 +117,28 @@ python3 scripts/build_pptx.py \
 
 # 5. （可选）生成最终预览图给用户看
 python3 scripts/render_slides.py out/final.pptx out/renders
+python3 scripts/stitch_preview.py out/renders out/preview.png --pages 1 3 6 9
 ```
 
 ## 目录结构
 
 ```
-GordenPPTSkill/
+ppt-skill/
 ├── SKILL.md               ← 本文件
 ├── VERSION                ← 当前版本号（例 1.0.0）
 ├── CHANGELOG.md           ← 人类可读变更日志
 ├── updates.json           ← 机器可读版本增量索引
-├── manifest.json          ← 所有文件的 sha256 与版本归属
+├── manifest.json          ← 所有受版本管理文件的 sha256 与版本归属
 ├── README.md              ← 仓库概览（用户阅读）
 ├── scripts/
-│   ├── render_slides.py       # pptx → PDF → 每页 PNG
-│   ├── build_pptx.py          # 按 edits.json 选页 + 换字 → 输出 pptx
+│   ├── render_slides.py       # pptx → PDF → PNG
+│   ├── extract_template.py    # pptx → raw.json 结构化文本+形状
+│   ├── stitch_preview.py      # 4 页拼接为 preview.png
+│   ├── build_pptx.py          # 按 edits.json 选页+换字
+│   ├── batch_extract.py       # 批处理
+│   ├── scaffold_detail.py     # 由 raw.json 自动生成 detail.json 草稿
 │   ├── check_update.py        # 检查远端是否有更新
-│   ├── apply_update.py        # 按 delta 增量更新本地文件
-│   └── build_manifest.py      # 重建 manifest.json（完整性自检用）
+│   └── apply_update.py        # 增量更新本地文件
 ├── references/
 │   ├── workflow.md
 │   ├── pptx-edit-schema.md
@@ -151,10 +159,12 @@ GordenPPTSkill/
 | 脚本 | 干嘛用 |
 |---|---|
 | `render_slides.py` | 把任意 pptx 渲染成每页一张 PNG（用 LibreOffice + pdftoppm） |
+| `extract_template.py` | 把 pptx 的形状 / 文本结构 dump 成 raw.json，并产出 text_overview.md |
+| `stitch_preview.py` | 选 4 张 PNG 拼成一张 2×2 预览图 |
 | `build_pptx.py` | 按 `edits.json`（含选页、文字替换）从模板生成最终 pptx |
+| `scaffold_detail.py` | 由 raw.json 生成 detail.json 初稿（机械填充 slot_id 等） |
 | `check_update.py` | 对比本地 VERSION 和远端 updates.json，告诉你要不要更新 |
 | `apply_update.py` | 按 updates.json 的 delta 列表只下载变动文件 |
-| `build_manifest.py` | 重新计算 manifest.json（用于自检 / 自定义新版本） |
 
 ## 字体说明
 

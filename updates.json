@@ -1,9 +1,24 @@
 {
   "$schema": "ppt-skill-updates/v1",
-  "latest_version": "1.0.2",
+  "latest_version": "1.0.3",
   "update_source": "git+https://github.com/GordenSun/GordenPPTSkill.git#main",
   "_update_source_help": "Set update_source to a URL prefix (e.g. https://example.com/ppt-skill/v1/) that hosts the same updates.json + the per-file mirror, OR to a git remote+branch in the form 'git+https://...repo.git#main'. When unset, check_update.py reports 'Update source unset' and exits cleanly.",
   "history": [
+    {
+      "version": "1.0.3",
+      "released_at": "2026-05-28",
+      "summary": "Docs-only: clarify that cover/agenda/section_divider/ending pages should be skipped if page_roles[role] is empty (do not fabricate them).",
+      "added": [],
+      "modified": [
+        "VERSION",
+        "CHANGELOG.md",
+        "updates.json",
+        "manifest.json",
+        "SKILL.md",
+        "references/workflow.md"
+      ],
+      "removed": []
+    },
     {
       "version": "1.0.2",
       "released_at": "2026-05-28",
