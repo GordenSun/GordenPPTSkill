@@ -1,7 +1,7 @@
 {
   "$schema": "ppt-skill-manifest/v1",
   "skill_name": "ppt-builder",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "file_count": 98,
   "files": {
     ".gitattributes": {
@@ -17,10 +17,10 @@
       "last_modified": "1.0.0"
     },
     "CHANGELOG.md": {
-      "sha256": "fbe9a22e680c091351e1ddc5442e72ec7be4282c85b5bf6ab31ba889a235071d",
-      "size": 14394,
+      "sha256": "743f8625e00f607abbd629f6002a75500c8a221475c44b44ca1488be84fe0f93",
+      "size": 14714,
       "version_added": "1.0.0",
-      "last_modified": "1.0.8"
+      "last_modified": "1.0.9"
     },
     "LICENSE": {
       "sha256": "6f52f1baed8c393758ff6e8bf9c515edd6fd377187ae38a64165a330573b7829",
@@ -47,16 +47,16 @@
       "last_modified": "1.0.8"
     },
     "VERSION": {
-      "sha256": "326dd5d8641f399990de42def50ac29eb4c9222601c0a0a3fc3c947dd3bec65d",
+      "sha256": "2df2bd7011e87351e2e3e296ddb7f2520270a76160f95b2d64b337167294f28c",
       "size": 6,
       "version_added": "1.0.0",
-      "last_modified": "1.0.8"
+      "last_modified": "1.0.9"
     },
     "assets/group-qr.jpg": {
-      "sha256": "08093fd8089a52a6ceb269c50d5461d3368c6bb2bb289d55ace0af8bf273755d",
-      "size": 184112,
+      "sha256": "f747b5be5355872eaec0802efc19e454cbb73e2eeec4f7ecb8e9b3b995bd8d00",
+      "size": 321686,
       "version_added": "1.0.5",
-      "last_modified": "1.0.5"
+      "last_modified": "1.0.9"
     },
     "references/chart-editing.md": {
       "sha256": "37ccd257ae8f8c655e02703e90cdd9163f1254e21587cbe1c833ed8a2854f999",
@@ -587,10 +587,10 @@
       "last_modified": "1.0.6"
     },
     "updates.json": {
-      "sha256": "19f9470ce47a77c4bcc0ab03843475251d216cac3f1b3e4f3c5eef470ed17650",
-      "size": 12747,
+      "sha256": "8239266ae0f0ecb3155085f1d6df25cdb888201cafdbaf5fa54ac54392a29c54",
+      "size": 13125,
       "version_added": "1.0.0",
-      "last_modified": "1.0.8"
+      "last_modified": "1.0.9"
     }
   }
 }

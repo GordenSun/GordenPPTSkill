@@ -1,9 +1,23 @@
 {
   "$schema": "ppt-skill-updates/v1",
-  "latest_version": "1.0.8",
+  "latest_version": "1.0.9",
   "update_source": "git+https://github.com/GordenSun/GordenPPTSkill.git#main",
   "_update_source_help": "Set update_source to a URL prefix (e.g. https://example.com/ppt-skill/v1/) that hosts the same updates.json + the per-file mirror, OR to a git remote+branch in the form 'git+https://...repo.git#main'. When unset, check_update.py reports 'Update source unset' and exits cleanly.",
   "history": [
+    {
+      "version": "1.0.9",
+      "released_at": "2026-05-30",
+      "summary": "Replaced the WeChat group QR (assets/group-qr.jpg) with the new 'PPT Skill 交流群-2' code.",
+      "added": [],
+      "modified": [
+        "VERSION",
+        "CHANGELOG.md",
+        "updates.json",
+        "manifest.json",
+        "assets/group-qr.jpg"
+      ],
+      "removed": []
+    },
     {
       "version": "1.0.8",
       "released_at": "2026-05-29",
